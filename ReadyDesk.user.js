@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ReadyDesk Modifications
 // @namespace    http://zyrenth.com/
-// @version      0.1
+// @version      0.2
 // @description  Slight tweaks to make ReadyDesk suck less
 // @author       Andrew Nagle
 // @match        http://support.leedsworld.com/hd/*
@@ -54,32 +54,40 @@
 
     var ticketHeaderTbl = document.getElementById("headtable");
 
+    var highlightVariables = [
+        { key:"ASSIGNEDGROUP", value: "DevSupport", color:"#f0e0ff", index:-1 },
+        { key:"STATUS", value: "Deferred", color:"#f7f7f7", index:-1 }
+    ];
+    
     if (ticketHeaderTbl) {
         console.log("Found header table");
-        var cellIndex = -1;
         for (var i = 0; i < ticketHeaderTbl.rows[0].cells.length; i++) {
 
-            if (ticketHeaderTbl.rows[0].cells[i].getAttribute("columnname") == "ASSIGNEDGROUP") {
-                console.log("Found group column at index " + i);
-                cellIndex = i;
-                break;
+            for (var j = 0; j < highlightVariables.length; j++) {
+                if (ticketHeaderTbl.rows[0].cells[i].getAttribute("columnname") == highlightVariables[j].key) {
+                    console.log("Found " + highlightVariables[j].key + " at index " + i);
+                    highlightVariables[j].index = i;
+                }
             }
         }
 
-        if (cellIndex > 1) {
-            var ticketTbl = document.getElementById("bodytable");
-            for (var i = 0; i < ticketTbl.rows.length; i++) {
-                var decodedHtml = decodeHtml(ticketTbl.rows[i].cells[cellIndex].innerHTML).trim();
-                //console.log("Row " + i + " " + decodedHtml);
-                if (decodedHtml == "DevSupport") {
-                    var baseColor = "#f0e0ff";
-                    var darkColor = LightenDarkenColor(baseColor, -70);
-                    var oddColor = LightenDarkenColor(baseColor, -10);
+        var ticketTbl = document.getElementById("bodytable");
+        for (var i = 0; i < ticketTbl.rows.length; i++) {
+            for (var j = 0; j < highlightVariables.length; j++) {
+                var highlight = highlightVariables[j];
+                
+                if (highlight.index > -1) {
+                    var decodedHtml = decodeHtml(ticketTbl.rows[i].cells[highlight.index].innerHTML).trim();
+                    if (decodedHtml == highlight.value) {
+                        var baseColor = highlight.color;
+                        var darkColor = LightenDarkenColor(baseColor, -70);
+                        var oddColor = LightenDarkenColor(baseColor, -10);
 
-                    addGlobalStyle("tr#" + ticketTbl.rows[i].id + " td { background-color: " + baseColor +"; }");
-                    addGlobalStyle("tr#" + ticketTbl.rows[i].id + ".odd td { background-color: " + oddColor + "; }");
-                    addGlobalStyle("tr#" + ticketTbl.rows[i].id + ".selected td { background-color: " + darkColor + "; }");
-                    //console.log('DevSupport');
+                        addGlobalStyle("tr#" + ticketTbl.rows[i].id + " td { background-color: " + baseColor +"; }");
+                        addGlobalStyle("tr#" + ticketTbl.rows[i].id + ".odd td { background-color: " + oddColor + "; }");
+                        addGlobalStyle("tr#" + ticketTbl.rows[i].id + ".selected td { background-color: " + darkColor + "; }");
+                        console.log('DevSupport');
+                    }
                 }
             }
         }
