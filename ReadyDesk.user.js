@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ReadyDesk Modifications
 // @namespace    http://zyrenth.com/
-// @version      0.2
+// @version      0.3
 // @description  Slight tweaks to make ReadyDesk suck less
 // @author       Andrew Nagle
 // @match        http://support.leedsworld.com/hd/*
@@ -56,9 +56,10 @@
 
     var highlightVariables = [
         { key:"ASSIGNEDGROUP", value: "DevSupport", color:"#f0e0ff", index:-1 },
-        { key:"STATUS", value: "Deferred", color:"#f7f7f7", index:-1 }
+        { key:"STATUS", value: "Deferred", color:"#f7f7f7", index:-1 },
+        { key:"STATUS", value: "High", color:"#ff8080", index:-1 }
     ];
-    
+
     if (ticketHeaderTbl) {
         console.log("Found header table");
         for (var i = 0; i < ticketHeaderTbl.rows[0].cells.length; i++) {
@@ -75,7 +76,7 @@
         for (var i = 0; i < ticketTbl.rows.length; i++) {
             for (var j = 0; j < highlightVariables.length; j++) {
                 var highlight = highlightVariables[j];
-                
+
                 if (highlight.index > -1) {
                     var decodedHtml = decodeHtml(ticketTbl.rows[i].cells[highlight.index].innerHTML).trim();
                     if (decodedHtml == highlight.value) {
