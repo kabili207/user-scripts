@@ -178,12 +178,8 @@
         var player = {}; // Previous player state
         var time_played = 0;
         var last_refresh = (new Date()).getTime();
-        var num_scrobbles = 0;
         var curr_song_title = '';
-
-        var sent_stopped = false;
-        var sent_playing = false;
-        var sent_paused = false;
+        var last_state = 'NONE';
 
         var scrobble_point = 0.7;
         var scrobble_interval = 5; // 5 seconds
@@ -211,17 +207,17 @@
                     _p.song.position <= refresh_interval) {
                     curr_song_title = _p.song.title;
                     time_played = 0;
-                    num_scrobbles = 0;
-                    last_refresh = now - refresh_interval*1000;
+                    last_refresh = now - refresh_interval * 1000;
+                    last_state = 'NONE';
                 }
 
                 if (_p.is_playing) {
                     // TODO: Set playing
 
-                    if (num_scrobbles === 0 && time_played >= scrobble_interval && num_scrobbles < max_scrobbles && !is_advertisment(_p.song)) {
+                    if (last_state != 'PLAYING' && time_played >= scrobble_interval && !is_advertisment(_p.song)) {
                         scrobble_song(_p);
                         time_played = 0;
-                        num_scrobbles += 1;
+                        last_state = 'PLAYING';
                     } else {
                         /*
                          * Don't depend on the refresh_interval to
@@ -233,24 +229,17 @@
                         time_played += (now - last_refresh) / 1000;
                     }
 
-                    sent_paused = false;
-                    sent_stopped = false;
-                    sent_playing = true;
                     // TODO: Send track details?
                 } else {
-                    if (!sent_paused) {
+                    if (last_state != 'PAUSED') {
                         scrobble_song(_p);
-                        sent_paused = true;
-                        sent_stopped = false;
-                        sent_playing = false;
+                        last_state = 'PAUSED';
                     }
                 }
             } else {
-                if(!sent_stopped) {
+                if(last_state != 'STOPPED') {
                     scrobble_song(_p);
-                    sent_paused = false;
-                    sent_stopped = true;
-                    sent_playing = false;
+                    last_state = 'STOPPED';
                 }
             }
             last_refresh = now;
@@ -284,6 +273,9 @@
                 song.artist === gmusic_ads_metadata.artist;
         }
 
+        window.addEventListener("unload", function onunload() {
+            scrobble_song({"has_song":false,"is_playing":false,"song":{"position":0,"time":0,"title":"","artist":"","album_artist":null,"album":"","cover":null}});
+        }, false);
 
         window.setInterval(function() {
             port_on_message(new Player(new GoogleMusicParser()));
