@@ -54,7 +54,7 @@
          */
         function GoogleMusicParser() {
 
-        };
+        }
 
         /**
          * Check whether a song loaded into player widget
@@ -181,6 +181,9 @@
         var num_scrobbles = 0;
         var curr_song_title = '';
 
+        var sent_stopped = false;
+        var sent_playing = false;
+        var sent_paused = false;
 
         var scrobble_point = 0.7;
         var scrobble_interval = 5; // 5 seconds
@@ -215,13 +218,8 @@
                 if (_p.is_playing) {
                     // TODO: Set playing
 
-                    if (num_scrobbles === 0 &&
-                        time_played >= scrobble_interval &&
-                        num_scrobbles < max_scrobbles &&
-                        !is_advertisment(_p.song)) {
-                        scrobble_song(_p.song.artist,_p.song.album_artist,
-                                      _p.song.album, _p.song.title,
-                                      Math.round(new Date().getTime() / 1000 - time_played));
+                    if (num_scrobbles === 0 && time_played >= scrobble_interval && num_scrobbles < max_scrobbles && !is_advertisment(_p.song)) {
+                        scrobble_song(_p);
                         time_played = 0;
                         num_scrobbles += 1;
                     } else {
@@ -235,20 +233,50 @@
                         time_played += (now - last_refresh) / 1000;
                     }
 
+                    sent_paused = false;
+                    sent_stopped = false;
+                    sent_playing = true;
                     // TODO: Send track details?
                 } else {
-                    // TODO: SEND PAUSE
+                    if (!sent_paused) {
+                        scrobble_song(_p);
+                        sent_paused = true;
+                        sent_stopped = false;
+                        sent_playing = false;
+                    }
                 }
             } else {
-                // TODO: SEND STOP
+                if(!sent_stopped) {
+                    scrobble_song(_p);
+                    sent_paused = false;
+                    sent_stopped = true;
+                    sent_playing = false;
+                }
             }
             last_refresh = now;
         }
 
 
-        function scrobble_song(artist, album_artist, album, title, time) {
+        function scrobble_song(song_data) {
             // TODO: do something with it
-            console.log('New track: ' + title + ' by ' + album_artist + ' (' + artist + ') on ' + album + ' time: ' + time);
+            console.log(song_data);
+            var data = JSON.stringify(song_data);
+            console.log(data);
+
+            GM_xmlhttpRequest({
+                method: "POST",
+                url: "http://localhost:6305/",
+                data: data,
+                timeout: 2000,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                onload: function(response) {
+
+                }
+            });
+
+            //console.log('New track: ' + title + ' by ' + album_artist + ' (' + artist + ') on ' + album + ' time: ' + time);
         }
 
         function is_advertisment(song) {
