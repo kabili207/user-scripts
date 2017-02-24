@@ -54,13 +54,29 @@
 
     var ticketHeaderTbl = document.getElementById("headtable");
 
-    var highlightVariables = [
-        { key:"ASSIGNEDGROUP", value: "DevSupport", color:"#f0e0ff", index:-1 },
-        { key:"STATUS", value: "Deferred", color:"#f7f7f7", index:-1 },
-        { key:"STATUS", value: "High", color:"#ff8080", index:-1 }
-    ];
 
     if (ticketHeaderTbl) {
+
+        var login_elems = parent.frames["hd_top_frame"].document.getElementsByClassName("normbold");
+        var re_login = /^Logged on as ([\w-]+)/;
+        var login_name = null;
+
+        for (var i = 0; i < login_elems.length; i++) {
+            var re_results = re_login.exec(login_elems[i].innerText);
+            if (re_results.length > 0) {
+                login_name = re_results[1];
+                console.log("Found user " + login_name);
+                break;
+            }
+        }
+
+        var highlightVariables = [
+            { key:"ASSIGNEDGROUP", value: "DevSupport", color:"#f0e0ff", index:-1 },
+            { key:"ASSIGNEDTO", value: login_name, color:"#9bedff", index:-1 },
+            { key:"STATUS", value: "Deferred", color:"#f7f7f7", index:-1 },
+            { key:"STATUS", value: "High", color:"#ff8080", index:-1 }
+        ];
+
         console.log("Found header table");
         for (var i = 0; i < ticketHeaderTbl.rows[0].cells.length; i++) {
 
