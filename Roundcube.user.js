@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Roundcube Tweaks
 // @namespace    http://zyrenth.com/
-// @version      0.1
+// @version      0.4
 // @description  Tweaks to roundcube
 // @author       Andrew Nagle
 // @match        https://mail.zyrenth.com/*
@@ -49,6 +49,10 @@
     }
 
     addGlobalStyle(".messagelist tr.unread span.tb_label_dots { font-weight: normal; }");
+    addGlobalStyle(
+        "#messagelist tr.message td.subject { position: relative; }" +
+        "#messagelist tr.message td.subject span.tb_label_dots { top: 0.75em; } "
+    );
     
     var myFlags = GM_SuperValue.get("FlagConfig", [
         { flag:"STORY", color:"#33CCFF" },
@@ -67,6 +71,11 @@
             "#messagelist tr." + tagName + " td, #messagelist tr." + tagName + " td a, .toolbarmenu li." + tagName + ", .toolbarmenu li." + tagName + " a.active { color: " + flagColor + "; } " +
             "div#labelbox span.box_" + tagName + " { background-color: " + flagColor + "; } "
         );
+        
+        var labelbox = document.querySelector("div#labelbox span.box_" + tagName);
+        if(labelbox) {
+            labelbox.innerHTML = flagName.toLowerCase();
+        }
     }
 
 
