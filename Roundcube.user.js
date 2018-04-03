@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Roundcube Tweaks
 // @namespace    http://zyrenth.com/
-// @version      0.5
+// @version      0.6
 // @description  Tweaks to roundcube
-// @author       Andrew Nagle
+// @author       Amy Nagle
 // @match        https://mail.zyrenth.com/*
 // @grant        GM_getValue
 // @grant        GM_setValue

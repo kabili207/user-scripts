@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         ReadyDesk Modifications
 // @namespace    http://zyrenth.com/
-// @version      0.3
+// @version      0.4
 // @description  Slight tweaks to make ReadyDesk suck less
-// @author       Andrew Nagle
+// @author       Amy Nagle
 // @match        http://support.leedsworld.com/hd/*
 // @grant        none
 // ==/UserScript==

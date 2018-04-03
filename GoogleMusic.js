@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Google Music Forwarder
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Parse Google Music
-// @author       Andrew Nagle
+// @author       Amy Nagle
 // @include      http://play.google.com/music/listen*
 // @include      https://play.google.com/music/listen*
 // @match        http://play.google.com/music/listen*
