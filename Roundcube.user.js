@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Roundcube Tweaks
 // @namespace    http://zyrenth.com/
-// @version      0.7
+// @version      0.8
 // @description  Tweaks to roundcube
 // @author       Amy Nagle
 // @match        https://mail.zyrenth.com/*
@@ -71,10 +71,10 @@
     );
 
     var myFlags = GM_SuperValue.get("FlagConfig", [
-        { flag:"STORY", color:"#33CCFF" },
-        { flag:"HENTAI", color:"#FF6666" },
-        { flag:"GOO", color:"#CC33FF" },
-        { flag:"LOYALTY", color:"#000000" }
+        { flag:"STORY", color:"#33CCFF", text: "Story Updates" },
+        { flag:"HENTAI", color:"#FF6666", text: "Hentai" },
+        { flag:"GOO", color:"#CC33FF", text: "Goo" },
+        { flag:"LOYALTY", color:"#000000", text: "Loyalty Programs" }
     ]);
 
     for (var i = 0; i < myFlags.length; i++) {
@@ -92,7 +92,7 @@
 
         var labelbox = document.querySelector("div#labelbox span.box_" + tagName);
         if(labelbox) {
-            labelbox.innerHTML = flagName.toLowerCase();
+            labelbox.innerHTML = myFlags[i].text;
         }
     }
 
