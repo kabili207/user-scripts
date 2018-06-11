@@ -64,6 +64,10 @@
         return (L > 0.179) ? darkColor : lightColor;
     }
 
+    function getRcName(flag) {
+        return flag.replace('$', '').replace('\\', '').toUpperCase();
+    }
+
     addGlobalStyle(".messagelist tr.unread span.tb_label_dots { font-weight: normal; }");
     addGlobalStyle(
         "#messagelist tr.message td.subject { position: relative; }" +
@@ -71,16 +75,17 @@
     );
 
     var myFlags = GM_SuperValue.get("FlagConfig", [
-        { flag:"STORY", color:"#33CCFF", text: "Story Updates" },
-        { flag:"HENTAI", color:"#FF6666", text: "Hentai" },
-        { flag:"GOO", color:"#CC33FF", text: "Goo" },
-        { flag:"LOYALTY", color:"#000000", text: "Loyalty Programs" }
+        { flag:"$story", color:"#33CCFF", text:"Story Updates" },
+        { flag:"$hentai", color:"#FF6666", text:"Hentai" },
+        { flag:"$goo", color:"#CC33FF", text:"Goo" },
+        { flag:"$loyalty", color:"#000000", text:"Loyalty Programs" }
     ]);
 
     for (var i = 0; i < myFlags.length; i++) {
         var flagName = myFlags[i].flag;
+        var flagRcName = getRcName(flagName);
         var flagColor = myFlags[i].color;
-        var tagName = "tb_label_" + flagName;
+        var tagName = "tb_label_" + flagRcName;
         var foreColor = getForegroundColor(flagColor, '#FFFFFF', '#000000');
 
         addGlobalStyle(
