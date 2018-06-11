@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Roundcube Tweaks
 // @namespace    http://zyrenth.com/
-// @version      0.6
+// @version      0.7
 // @description  Tweaks to roundcube
 // @author       Amy Nagle
 // @match        https://mail.zyrenth.com/*
@@ -54,7 +54,7 @@
         var g = parseInt(color.substring(2, 4), 16); // hexToG
         var b = parseInt(color.substring(4, 6), 16); // hexToB
         var uicolors = [r / 255, g / 255, b / 255];
-        var c = uicolors.map((col) => {
+        var c = uicolors.map(function(col) {
             if (col <= 0.03928) {
                 return col / 12.92;
             }
@@ -96,5 +96,27 @@
         }
     }
 
+    var labelLinks = document.querySelectorAll("div#tb_label_popup li");
+
+    var labelMaps = [
+        { data: 'LABEL1', flag: '$label1' },
+        { data: 'LABEL2', flag: '$label2' },
+        { data: 'LABEL3', flag: '$label3' },
+        { data: 'LABEL4', flag: '$label4' },
+        { data: 'LABEL5', flag: '$label5' }
+    ];
+
+    console.log(labelMaps);
+    for (var i = 0; i < labelLinks.length; i++) {
+        var label = labelLinks[i];
+
+        for (var j = 0; j < labelMaps.length; j++) {
+            var map = labelMaps[j];
+            console.log(map);
+            if(label.dataset.labelname == map.data) {
+                label.dataset.labelname = map.flag;
+            }
+        }
+    }
 
 })();
