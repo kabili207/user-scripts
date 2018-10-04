@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Roundcube Tweaks
 // @namespace    http://zyrenth.com/
-// @version      0.8
+// @version      0.9
 // @description  Tweaks to roundcube
 // @author       Amy Nagle
 // @match        https://mail.zyrenth.com/*
@@ -68,10 +68,10 @@
         return flag.replace('$', '').replace('\\', '').toUpperCase();
     }
 
-    addGlobalStyle(".messagelist tr.unread span.tb_label_dots { font-weight: normal; }");
     addGlobalStyle(
-        "#messagelist tr.message td.subject { position: relative; }" +
-        "#messagelist tr.message td.subject span.tb_label_dots { top: 0.75em; } "
+        ".messagelist tr.unread span.tb_label_dots { font-weight: normal; } " +
+        "#messagelist tr.message td.subject { position: relative; } " +
+        "#messagelist tr.message td.subject span.tb_label_dots { float: right; margin-top: 0.75em; } "
     );
 
     var myFlags = GM_SuperValue.get("FlagConfig", [
