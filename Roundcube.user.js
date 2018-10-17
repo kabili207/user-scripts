@@ -71,7 +71,7 @@
     addGlobalStyle(
         ".messagelist tr.unread span.tb_label_dots { font-weight: normal; } " +
         "#messagelist tr.message td.subject { position: relative; } " +
-        "#messagelist tr.message td.subject span.tb_label_dots { float: right; margin-top: 0.75em; } "
+        "#messagelist tr.message td.subject span.tb_label_dots { float: right; position: relative; top: 0.65em; } "
     );
 
     var myFlags = GM_SuperValue.get("FlagConfig", [
@@ -123,5 +123,24 @@
             }
         }
     }
+
+
+    window.addEventListener('load', function() {
+        var messages = document.querySelectorAll("table.messagelist tr.message");
+
+        for (var i = 0; i < messages.length; i++) {
+            var message = messages[i];
+            var subject = message.querySelector(".subject");
+            var subjectLink = subject.querySelector("a");
+            var labels = subject.querySelector(".tb_label_dots");
+            addGlobalStyle(
+                " #messagelist  tr#" + message.id + " td.subject { padding-right: "+ (labels.offsetWidth + 3) + "px; }" +
+                " #messagelist  tr#" + message.id + " td.subject .tb_label_dots { margin-right: "+ (labels.offsetWidth * -1 - 3) + "px; }"
+                );
+            subject.appendChild(subjectLink);
+        }
+    }, false);
+
+
 
 })();
