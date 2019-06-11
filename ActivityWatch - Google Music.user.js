@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ActivityWatch - Google Music
-// @namespace    http://zyrenth.com/
-// @version      0.2
+// @namespace    http://tampermonkey.net/
+// @version      0.3
 // @description  Track music data from Google Music
 // @author       Amy Nagle
 // @include      http://play.google.com/music/listen*
@@ -22,11 +22,15 @@
 
     var testing_mode = false;
 
-    // Mininum guaranteed in chrome is 1min
     var check_interval = 5;
     var max_check_interval = 60;
     var heartbeat_interval = 20;
     var heartbeat_pulsetime = heartbeat_interval + max_check_interval;
+
+    var gmusic_ads_metadata = {
+        title: 'We\'ll be right back',
+        artist: 'Subscribe to go ad-free'
+    };
 
     var client = {
         testing: null,
@@ -273,33 +277,6 @@
             return elm ? elm.textContent : null;
         }
     }
-
-    var gmusic_ads_metadata = {
-        title: 'We\'ll be right back',
-        artist: 'Subscribe to go ad-free'
-    };
-
-    function scrobble_song(song_data) {
-        // TODO: do something with it
-        console.log(song_data);
-        var data = JSON.stringify(song_data);
-        console.log(data);
-
-        GM_xmlhttpRequest({
-            method: "POST",
-            url: "http://localhost:6305/",
-            data: data,
-            timeout: 2000,
-            headers: {
-                "Content-Type": "application/json"
-            },
-            onload: function(response) {
-
-            }
-        });
-
-        //console.log('New track: ' + title + ' by ' + album_artist + ' (' + artist + ') on ' + album + ' time: ' + time);
-    };
 
     client.setup();
     window.setInterval(function() {
