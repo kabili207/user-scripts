@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         ActivityWatch - Google Music
-// @namespace    http://tampermonkey.net/
+// @namespace    http://zyrenth.com/
 // @version      0.2
 // @description  Track music data from Google Music
 // @author       Amy Nagle

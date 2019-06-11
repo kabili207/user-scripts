@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         MusicBrainz: Import from Google Play
-// @namespace    http://tampermonkey.net/
+// @namespace    http://zyrenth.com/
 // @version      0.1
 // @description  Import releases from Google Play
 // @author       Amy Nagle
