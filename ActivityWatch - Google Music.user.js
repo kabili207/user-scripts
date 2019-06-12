@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ActivityWatch - Google Music
-// @namespace    http://tampermonkey.net/
-// @version      0.3
+// @namespace    http://zyrenth.com/
+// @version      1.1
 // @description  Track music data from Google Music
 // @author       Amy Nagle
 // @include      http://play.google.com/music/listen*
@@ -15,6 +15,7 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        unsafeWindow
+// @require      https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.20/ua-parser.min.js#sha256-SnVH7Yzhz2IrukHGzE0XRYYchaUZQ6gcytwsewS8j6s=
 // ==/UserScript==
 
 (function() {
@@ -51,9 +52,9 @@
         },
 
         getBucketId: function() {
-            // TODO: This works for Chrome and Firefox, but is a bit hacky and wont work in the general case
-            var browserName = /(Chrome|Firefox)\/([0-9.]+)/.exec(navigator.userAgent)[1];
-            return "aw-watcher-google-music-" + browserName.toLowerCase();
+            var ua_parser = new UAParser();
+            var browserName = ua_parser.getBrowser().name;
+            return "aw-watcher-google-music-" + browserName.toLowerCase().replace(' ', '-');
         },
 
         createBucket: function(){
