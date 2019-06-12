@@ -1,20 +1,18 @@
 // ==UserScript==
 // @name         ActivityWatch - Google Music
 // @namespace    http://zyrenth.com/
-// @version      1.1
+// @version      1.2
 // @description  Track music data from Google Music
 // @author       Amy Nagle
 // @include      http://play.google.com/music/listen*
 // @include      https://play.google.com/music/listen*
 // @match        http://play.google.com/music/listen*
 // @match        https://play.google.com/music/listen*
-// @run-at       document-start
+// @run-at       document-idle
 // @grant        GM_xmlhttpRequest
-// @grant        GM_registerMenuCommand
 // @grant        GM_notification
 // @grant        GM_setValue
 // @grant        GM_getValue
-// @grant        unsafeWindow
 // @require      https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.20/ua-parser.min.js#sha256-SnVH7Yzhz2IrukHGzE0XRYYchaUZQ6gcytwsewS8j6s=
 // ==/UserScript==
 
