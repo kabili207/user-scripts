@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         Roundcube Tweaks
 // @namespace    http://zyrenth.com/
-// @version      0.9
+// @version      1.1
 // @description  Tweaks to roundcube
 // @author       Amy Nagle
 // @match        https://mail.zyrenth.com/*
 // @grant        GM_getValue
 // @grant        GM_setValue
-// @require http://userscripts-mirror.org/scripts/source/107941.user.js
+// @require      http://userscripts-mirror.org/scripts/source/107941.user.js
+// @icon         https://mail.zyrenth.com/skins/elastic/images/favicon.ico
 // ==/UserScript==
 
 (function() {
@@ -74,11 +75,18 @@
         "#messagelist tr.message td.subject span.tb_label_dots { float: right; position: relative; top: 0.65em; } "
     );
 
+    // Icons
+    // See FontAwesome for more https://fontawesome.com/icons?d=gallery&s=solid&m=free
+    // Star - f005
+    // Tag - f02b
     var myFlags = GM_SuperValue.get("FlagConfig", [
-        { flag:"$story", color:"#33CCFF", text:"Story Updates" },
-        { flag:"$hentai", color:"#FF6666", text:"Hentai" },
-        { flag:"$goo", color:"#CC33FF", text:"Goo" },
-        { flag:"$loyalty", color:"#000000", text:"Loyalty Programs" }
+        { flag:"$story", color:"#33CCFF", text:"Story Updates", icon: 'f02d' /* book */ },
+        { flag:"$hentai", color:"#FF6666", text:"Hentai", icon: 'f02b' },
+        { flag:"$goo", color:"#CC33FF", text:"Goo", icon: 'f02b' },
+        { flag:"$loyalty", color:"#000000", text:"Loyalty Programs", icon: 'f005' /* star */ },
+        { flag:"$tracking", color:"#000000", text:"Tracking", icon: 'f48b' /* shipping-fast */ },
+        { flag:"$finance", color:"#009900", text:"Financial", icon: 'f53a' /* money-bill-wave */ },
+        { flag:"$bill", color:"#009900", text:"Bill", icon: 'f571' /* file-invoice-dollar */ }
     ]);
 
     for (var i = 0; i < myFlags.length; i++) {
@@ -89,15 +97,22 @@
         var foreColor = getForegroundColor(flagColor, '#FFFFFF', '#000000');
 
         addGlobalStyle(
-            ".tb_label_dots span." + tagName + " { color: " + flagColor +"; } " +
-            "#messagelist tr.selected." + tagName + " td, #messagelist tr.selected." + tagName + " td a { color: #FFFFFF; background-color: " + flagColor + "; } " +
-            "#messagelist tr." + tagName + " td, #messagelist tr." + tagName + " td a, .toolbarmenu li." + tagName + ", .toolbarmenu li." + tagName + " a.active { color: " + flagColor + "; } " +
-            "div#labelbox span.box_" + tagName + " { color: " + foreColor + "; background-color: " + flagColor + "; } "
+            "." + tagName + " .fromto:before { content: '\\" + myFlags[i].icon + "'; color: " + flagColor + "; font-weight: 900; font-family: 'Icons'; padding-right: 0.4rem; margin-left: -1.25rem; }" +
+            ".tb-detail-link_" + flagRcName + ":before { content: '\\" + myFlags[i].icon + "'; color: " + flagColor + "; }"
         );
 
-        var labelbox = document.querySelector("div#labelbox span.box_" + tagName);
-        if(labelbox) {
-            labelbox.innerHTML = myFlags[i].text;
+        var headerLinks = document.querySelector("#message-header .short-header div.header-links");
+        if(headerLinks) {
+            var messageLabels = unsafeWindow.tb_labels_for_message;
+            if (messageLabels.includes(flagRcName)) {
+                console.log("Adding flag " + flagRcName);
+                var flagLink = document.createElement("a");
+                flagLink.setAttribute('href', '#');
+                flagLink.setAttribute('onclick', 'return false;');
+                flagLink.innerText = myFlags[i].text;
+                flagLink.classList.add("tb-detail-link_" + flagRcName);
+                headerLinks.append(flagLink);
+            }
         }
     }
 
@@ -133,11 +148,6 @@
             var subject = message.querySelector(".subject");
             var subjectLink = subject.querySelector("a");
             var labels = subject.querySelector(".tb_label_dots");
-            addGlobalStyle(
-                " #messagelist  tr#" + message.id + " td.subject { padding-right: "+ (labels.offsetWidth + 3) + "px; }" +
-                " #messagelist  tr#" + message.id + " td.subject .tb_label_dots { margin-right: "+ (labels.offsetWidth * -1 - 3) + "px; }"
-                );
-            subject.appendChild(subjectLink);
         }
     }, false);
 
