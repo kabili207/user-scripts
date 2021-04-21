@@ -39,7 +39,7 @@ basically, the format is: "name": "url",
         emoji.width = 24;
         emoji.height = 24;
 
-        pasteHtmlAtCaret(emoji.outerHTML, document.findElementById("#cmt_blob").value);
+        pasteHtmlAtCaret(emoji.outerHTML, document.getElementById("cmt_blob").value);
     }
 
     function replaceEmojisPanel() {
