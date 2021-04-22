@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scribble Hub Custom Emoji
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  try to take over the world!
 // @author       Amy Nagle
 // @match        https://www.scribblehub.com/*
@@ -14,18 +14,13 @@
 (function() {
     'use strict';
 
-    /*
-this will hold an object containing your custom emojis
-as an example, here's what one of Scribble's emojis would look like:
-
-const customEmojis = {
-    "Blob Cookie": "https://www.scribblehub.com/wp-content/themes/writeit-child/emojis/blobs/blob_cookie_3.png",
-};
-
-basically, the format is: "name": "url",
-*/
+    // TODO: Store and retrieve these with GM_getValue/GM_setValue
     const customEmojis = {
-        "Blob Cookie": "https://www.scribblehub.com/wp-content/themes/writeit-child/emojis/blobs/blob_cookie_3.png",
+        "Meow Happy Paws": "https://cdn.discordapp.com/emojis/471640366093828096.gif?size=32",
+        "Meow Vibing": "https://cdn.discordapp.com/emojis/747680206734622740.gif?size=32",
+        "Meow Sweat": "https://cdn.discordapp.com/emojis/679885141958590505.png?size=32",
+        "Meow Nom Cookie": "https://cdn.discordapp.com/emojis/778655754621419540.gif?size=32",
+        "Meow Party": "https://cdn.discordapp.com/emojis/455135569287315496.gif?size=32",
     };
 
 
@@ -34,13 +29,20 @@ basically, the format is: "name": "url",
         const emoji = document.createElement("img");
         emoji.id = "emoji_list";
         emoji.src = element.firstElementChild.src;
-        emoji.classList.add("mceSmilieSprite", "mceSmilie35", "sp-wrap-yellow", "mce-charmap");
+        emoji.classList.add("mceSmilieSprite"/*, "mceSmilie35", "sp-wrap-default", "mce-charmap"*/);
         emoji.title = element.title;
-        emoji.width = 24;
-        emoji.height = 24;
+        emoji.width = 23;
+        emoji.height = 23;
 
         pasteHtmlAtCaret(emoji.outerHTML, document.getElementById("cmt_blob").value);
     }
+
+    window.addEventListener("click", event => {
+        const chirimoji = event.target.closest(".custom-emoji");
+        if (chirimoji) {
+            addCustomEmoji(chirimoji);
+        }
+    });
 
     function replaceEmojisPanel() {
         const tabs = document.querySelector("[onclick=\"insert_emoji(this);\"]")?.closest("#tabs");
@@ -50,30 +52,31 @@ basically, the format is: "name": "url",
 
         const tabList = tabs.querySelector("[role=\"tablist\"]");
 
+        // onclick needs to be set through attributes, otherwise comment replies/edits won't work
         const tabHeader = document.createElement("li");
         tabHeader.ariaSelected = false;
         tabHeader.ariaExpanded = false;
-        tabHeader.onclick = e => cmt_focus();
         tabHeader.tabIndex = -2;
         tabHeader.setAttribute("role", "tab");
+        tabHeader.setAttribute("onclick", "cmt_focus();");
         tabHeader.setAttribute("aria-labelledby", "ui-id-custom");
         tabHeader.setAttribute("aria-controls", "tabs-custom");
         tabHeader.classList.add("ui-tabs-tab","ui-corner-top","ui-state-default","ui-tab");
         tabList.appendChild(tabHeader);
 
         const tabTitle = document.createElement("a");
-        tabTitle.setAttribute("href", "#tabs-custom");
-        tabTitle.setAttribute("role", "presentation");
+        tabTitle.id = "ui-id-custom";
         tabTitle.text = "Custom";
         tabTitle.tabIndex = -2;
+        tabTitle.setAttribute("href", "#tabs-custom");
+        tabTitle.setAttribute("role", "presentation");
         tabTitle.classList.add("ui-tabs-anchor");
-        tabTitle.id = "ui-id-custom";
         tabHeader.appendChild(tabTitle);
 
         const customTab = document.createElement("div");
         customTab.id = "tabs-custom";
         customTab.ariaHidden = true;
-        customTab.onclick = e => cmt_focus();
+        tabHeader.setAttribute("onclick", "cmt_focus();");
         customTab.setAttribute("role", "tabpanel");
         customTab.setAttribute("unselectable", "on");
         customTab.setAttribute("aria-labelledby", "ui-id-custom");
@@ -86,7 +89,7 @@ basically, the format is: "name": "url",
             const emojiWrapper = document.createElement("span");
             emojiWrapper.id = "fa-list";
             emojiWrapper.title = name;
-            emojiWrapper.onclick = e => addCustomEmoji(emojiWrapper);
+            emojiWrapper.classList.add("custom-emoji");
             customTab.appendChild(emojiWrapper);
 
             const emoji = document.createElement("img");
