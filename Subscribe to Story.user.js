@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Subscribe to Story
 // @namespace    http://muffin.dev/
-// @version      1.0
+// @version      1.1
 // @description  Directly subscribe to a story in FreshRSS
 // @author       Amy Nagle
 // @match        https://*.scribblehub.com/*
@@ -170,7 +170,7 @@
 
     if (location.host.endsWith(".scribblehub.com")) {
         var navLinks = document.querySelector(".next_nav_links");
-        var readButtons = document.querySelector(".read_buttons");
+        var readButtons = document.querySelector(".read_buttons,.read_buttons_mb");
 
         GM_addStyle(`
                 .btn-fresh .btn_read { margin-left: 5px; }
