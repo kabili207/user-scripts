@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scribble Hub Custom Emoji
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  try to take over the world!
 // @author       Amy Nagle
 // @match        https://www.scribblehub.com/*
@@ -21,6 +21,8 @@
         "Meow Sweat": "https://cdn.discordapp.com/emojis/679885141958590505.png?size=32",
         "Meow Nom Cookie": "https://cdn.discordapp.com/emojis/778655754621419540.gif?size=32",
         "Meow Party": "https://cdn.discordapp.com/emojis/455135569287315496.gif?size=32",
+        "Meow Huggies": "https://cdn.discordapp.com/emojis/621634488220385290.png?size=32",
+        "Meow Melm": "https://cdn.discordapp.com/emojis/474939589992120332.png?size=32",
     };
 
 
