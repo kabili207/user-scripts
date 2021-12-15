@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Subscribe to Story
 // @namespace    http://muffin.dev/
-// @version      1.1
+// @version      1.2
 // @description  Directly subscribe to a story in FreshRSS
 // @author       Amy Nagle
 // @match        https://*.scribblehub.com/*
@@ -115,23 +115,32 @@
         }
     }
 
+
+    function getText(response) {
+        return response.text()
+    }
+
+    function getJson(response) {
+        return response.json()
+    }
+
     function initReaderApi(callback) {
-        const http = new XMLHttpRequest();
-        const url = new URL(API_BASE + "/accounts/ClientLogin");
-        var data = new FormData();
-        data.append("Email", FR_USER);
-        data.append("Passwd", FR_PASS);
-        http.onload = e => {
-            var resp = http.responseText;
+        fetch(API_BASE + "/accounts/ClientLogin", {
+            method: "post",
+            body: new URLSearchParams({
+                Email: FR_USER,
+                Passwd: FR_PASS
+            })
+        })
+        .then(getText)
+        .then(resp => {
             console.log(resp);
             const pattern = /^(\w+)=(.+)$/gm;
             for (const [fullMatch, key, value] of resp.matchAll(pattern)) {
                 fr_auth[key] = value === "null" ? null : value;
             }
             callback();
-        }
-        http.open("POST", url, true);
-        http.send(data);
+        });
     }
 
     function withToken(callback) {
@@ -243,6 +252,62 @@
             getFeedUrl();
 
         }
+    } else if (location.host.endsWith(".royalroad.com")) {
+
+        GM_addStyle(`
+                .btn-fresh { margin-left: 5px; color: #ffffff; border-radius: 4px!important;}
+                .btn-fresh:hover { color: #ffffff;}
+
+                .fresh-normal
+                    { border-color: #2e6da4; background-color: #337ab7;}
+                .fresh-normal:hover
+                    { border-color: #204d74; background-color: #286090;}
+
+                .fresh-added
+                    { background-color: #5cb85c; border-color: #4cae4c;}
+                .fresh-added:hover
+                    { background-color: #449d44; border-color: #398439;}
+
+                .fresh-failed
+                    { background-color: #d9534f; border-color: #d43f3a;}
+                .fresh-failed:hover
+                    { background-color: #c9302c; border-color: #ac2925;}
+
+                .fresh-pending
+                    { border-color: #636363; background-color: #808080;}
+                .fresh-pending:hover
+                    { border-color: #636363; background-color: #808080;}
+            `);
+
+        var rrNavLinks = document.querySelector(".portlet-footer .list-inline");
+        var rrReadButtons = document.querySelector(".read_buttons,.read_buttons_mb");
+
+        if (rrReadButtons) {
+
+        } else if (rrNavLinks) {
+            var rrListItem = document.createElement("li");
+            rrListItem.classList.add("list-item");
+            rrNavLinks.appendChild(rrListItem);
+
+            linkElement = document.createElement("a");
+            baseStyles = ["btn", "btn-sm", "btn-fresh"];
+            linkElement.id = "__rss-add-feed";
+            linkElement.onclick = e => addToFreshRSS();
+            linkElement.classList.add(...baseStyles);
+            rrListItem.appendChild(linkElement);
+            //readButtons.insertBefore(linkElement, readButtons.firstElementChild.nextSibling);
+
+            var linkIcon = document.createElement("i");
+            linkIcon.classList.add("fa", "fa-feed", "lib_space");
+            linkElement.appendChild(linkIcon);
+
+            textElement = document.createElement("span");
+            textElement.innerText = "Add Feed";
+            linkElement.appendChild(textElement);
+
+            getFeedUrl();
+        }
+
     }
 
 
