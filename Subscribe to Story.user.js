@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Subscribe to Story
 // @namespace    http://muffin.dev/
-// @version      1.2
+// @version      1.3
 // @description  Directly subscribe to a story in FreshRSS
 // @author       Amy Nagle
 // @match        https://*.scribblehub.com/*
@@ -76,6 +76,10 @@
             feedUrl = http.responseText;
             initReaderApi(checkIfSubscribed);
         }
+        http.onerror = e => {
+            console.log(http.responseText);
+            setSubscribeState(STATE.FAILED);
+        }
         http.open("GET", url, true);
         http.send();
     }
@@ -102,6 +106,7 @@
         }
         http.onerror = e => {
             console.log(http.responseText);
+            setSubscribeState(STATE.FAILED);
         }
         http.open(method, url, true);
         http.setRequestHeader('Authorization','GoogleLogin auth='+fr_auth.Auth);
