@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         Subscribe to Story
 // @namespace    http://muffin.dev/
-// @version      1.3
+// @version      1.4
 // @description  Directly subscribe to a story in FreshRSS
 // @author       Amy Nagle
 // @match        https://*.scribblehub.com/*
 // @match        https://scribblehub.com/*
 // @match        https://www.royalroad.com/*
+// @match        https://archiveofourown.org/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -313,6 +314,65 @@
             getFeedUrl();
         }
 
+    }else if (location.host.endsWith("archiveofourown.org")) {
+
+        GM_addStyle(`
+                .btn-fresh { margin-left: 5px; color: #ffffff; border-radius: 4px!important;}
+                .btn-fresh:hover { color: #ffffff;}
+
+                .btn-fresh img { height: 1em; vertical-align: middle; margin-right: .5em; }
+
+                .fresh-normal
+                    { border-color: #2e6da4; background-color: #337ab7;}
+                .fresh-normal:hover
+                    { border-color: #204d74; background-color: #286090;}
+
+                .fresh-added
+                    { background-color: #5cb85c; border-color: #4cae4c;}
+                .fresh-added:hover
+                    { background-color: #449d44; border-color: #398439;}
+
+                .fresh-failed
+                    { background-color: #d9534f; border-color: #d43f3a;}
+                .fresh-failed:hover
+                    { background-color: #c9302c; border-color: #ac2925;}
+
+                .fresh-pending
+                    { border-color: #636363; background-color: #808080;}
+                .fresh-pending:hover
+                    { border-color: #636363; background-color: #808080;}
+            `);
+
+        var ao3NavLinks = document.querySelector("#feedback ul.actions");
+        var ao3ReadButtons = document.querySelector(".read_buttons,.read_buttons_mb");
+
+        if (ao3ReadButtons) {
+
+        } else if (ao3NavLinks) {
+            var ao3ListItem = document.createElement("li");
+            //ao3ListItem.classList.add("list-item");
+            ao3NavLinks.appendChild(ao3ListItem);
+
+            linkElement = document.createElement("a");
+            baseStyles = ["btn", "btn-sm", "btn-fresh"];
+            linkElement.id = "__rss-add-feed";
+            linkElement.onclick = e => addToFreshRSS();
+            linkElement.classList.add(...baseStyles);
+            ao3ListItem.appendChild(linkElement);
+            //readButtons.insertBefore(linkElement, readButtons.firstElementChild.nextSibling);
+
+
+            var img = document.createElement("img");
+            img.src = LOGO_URL;
+            img.classList.add("__rss-link-image");
+            linkElement.appendChild(img);
+
+            textElement = document.createElement("span");
+            textElement.innerText = "Add Feed";
+            linkElement.appendChild(textElement);
+
+            getFeedUrl();
+        }
     }
 
 
